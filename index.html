@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#2c1810">
+<title>🍽️ FnB English Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cream:#fdf6ec;--warm:#fff9f2;--espresso:#2c1810;
+  --mahogany:#5c2e1a;--amber:#c8732a;--gold:#e8a94d;
+  --sage:#7a9e7e;--terra:#c0573b;--charcoal:#3d3530;
+  --muted:#8b7b72;--border:#e8d9cc;--sh:rgba(44,24,16,.1);
+  --radius:16px;--safe-bottom:env(safe-area-inset-bottom,0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--espresso);overflow-x:hidden;}
+
+#bar{height:3px;background:linear-gradient(90deg,var(--amber),var(--gold));width:0;position:fixed;top:0;left:0;right:0;z-index:300;pointer-events:none;}
+
+/* ── BOTTOM NAV ── */
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;background:rgba(44,24,16,.97);backdrop-filter:blur(14px);border-top:1px solid rgba(232,169,77,.25);padding:8px 0 calc(8px + var(--safe-bottom));flex-direction:row;justify-content:space-around;align-items:center;}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:rgba(253,246,236,.45);font-size:9px;font-weight:600;letter-spacing:.4px;padding:4px 6px;border-radius:10px;transition:color .2s;min-width:46px;}
+.bnav-item .ico{font-size:19px;line-height:1;}
+.bnav-item.act{color:var(--gold);}
+
+/* ── STICKY NAV ── */
+.snav{position:fixed;top:0;left:0;right:0;z-index:200;background:rgba(44,24,16,.97);backdrop-filter:blur(12px);padding:11px 24px;display:flex;align-items:center;gap:18px;transform:translateY(-100%);transition:transform .3s;border-bottom:1px solid rgba(232,169,77,.2);}
+.snav.show{transform:translateY(0);}
+.snav-brand{font-family:'Playfair Display',serif;color:var(--gold);font-size:.9rem;font-weight:700;white-space:nowrap;}
+.snav-links{display:flex;gap:14px;overflow-x:auto;}
+.snav-links a{text-decoration:none;color:rgba(253,246,236,.6);font-size:.79rem;white-space:nowrap;transition:color .2s;}
+.snav-links a:hover{color:var(--gold);}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,var(--mahogany),var(--espresso) 60%,#1a0f0a);min-height:100svh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 20px 80px;position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 50% 40%,rgba(200,115,42,.18),transparent 70%);pointer-events:none;}
+.hdeco{position:absolute;font-size:110px;opacity:.04;pointer-events:none;user-select:none;}
+.hdeco1{top:-10px;left:-10px;transform:rotate(-20deg);}
+.hdeco2{bottom:-20px;right:0;transform:rotate(15deg);}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,169,77,.12);border:1px solid rgba(232,169,77,.4);color:var(--gold);font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;padding:7px 18px;border-radius:40px;margin-bottom:22px;animation:fadeUp .7s ease both;}
+.hero h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,8vw,3.8rem);color:var(--cream);line-height:1.15;max-width:660px;animation:fadeUp .8s ease .1s both;}
+.hero h1 em{color:var(--gold);font-style:italic;}
+.hero-sub{margin-top:14px;color:rgba(253,246,236,.6);font-size:.93rem;max-width:480px;line-height:1.7;font-weight:300;animation:fadeUp .8s ease .2s both;}
+.hero-btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:30px;justify-content:center;animation:fadeUp .8s ease .32s both;}
+.btn-p{text-decoration:none;padding:12px 22px;border-radius:40px;font-size:.85rem;font-weight:600;background:var(--amber);color:#fff;transition:all .2s;min-height:46px;display:flex;align-items:center;}
+.btn-p:active{background:var(--gold);color:var(--espresso);}
+.btn-o{text-decoration:none;padding:12px 22px;border-radius:40px;font-size:.85rem;font-weight:600;border:1px solid rgba(232,169,77,.5);color:var(--gold);min-height:46px;display:flex;align-items:center;}
+.btn-o:active{background:rgba(232,169,77,.15);}
+
+/* ── SECTION ── */
+.sec{padding:60px 16px;}
+.sec-inner{max-width:1080px;margin:0 auto;}
+.sec-label{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--amber);margin-bottom:8px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:clamp(1.55rem,5vw,2.3rem);color:var(--espresso);line-height:1.25;}
+.sec-title em{color:var(--amber);font-style:italic;}
+.sec-desc{margin-top:10px;color:var(--muted);font-size:.91rem;max-width:540px;line-height:1.7;}
+.alt{background:var(--warm);}
+.divider{height:1px;background:linear-gradient(90deg,var(--amber),transparent);opacity:.28;}
+
+/* ── M01 PHRASES ── */
+.tabs{display:flex;flex-wrap:nowrap;gap:7px;margin:22px 0 18px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{padding:8px 15px;border-radius:30px;border:1.5px solid var(--border);background:transparent;color:var(--charcoal);font-size:.79rem;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;transition:all .18s;min-height:38px;}
+.tab.on,.tab:active{background:var(--amber);border-color:var(--amber);color:#fff;}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:11px;}
+.pcard{background:#fff;border:1px solid var(--border);border-radius:var(--radius);padding:15px 42px 15px 15px;position:relative;cursor:pointer;transition:box-shadow .2s,border-color .2s;-webkit-user-select:none;user-select:none;}
+.pcard:active{box-shadow:0 6px 20px var(--sh);border-color:var(--amber);}
+@media(hover:hover){.pcard:hover{box-shadow:0 6px 20px var(--sh);border-color:var(--amber);}}
+.ptag{display:inline-block;margin-bottom:7px;font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);background:rgba(200,115,42,.1);padding:2px 9px;border-radius:20px;}
+.pen{font-size:.92rem;font-weight:500;color:var(--espresso);line-height:1.55;margin-bottom:5px;}
+.pvi{font-size:.8rem;color:var(--muted);line-height:1.5;}
+.pcopy{position:absolute;top:11px;right:11px;background:var(--cream);border:1px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center;transition:all .18s;}
+.pcopy:active{background:var(--amber);color:#fff;border-color:var(--amber);}
+@media(hover:hover){.pcopy{opacity:0;} .pcard:hover .pcopy{opacity:1;} .pcopy:hover{background:var(--amber);color:#fff;border-color:var(--amber);}}
+
+/* ── M02 SCENARIOS ── */
+.s-tabs{display:flex;gap:7px;margin:22px 0 18px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none;}
+.s-tabs::-webkit-scrollbar{display:none;}
+.s-tab{padding:8px 15px;border-radius:30px;border:1.5px solid var(--border);background:transparent;color:var(--charcoal);font-size:.79rem;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;white-space:nowrap;transition:all .18s;min-height:38px;}
+.s-tab.on{background:var(--terra);border-color:var(--terra);color:#fff;}
+.s-tab:active{opacity:.8;}
+.sgrid{display:grid;grid-template-columns:1fr;gap:16px;}
+@media(min-width:740px){.sgrid{grid-template-columns:repeat(2,1fr);}}
+.scard{background:#fff;border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.scard-head{padding:15px 16px 13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:11px;}
+.scard-icon{font-size:24px;line-height:1;flex-shrink:0;}
+.scard-title{font-family:'Playfair Display',serif;font-size:.94rem;font-weight:700;color:var(--espresso);margin-bottom:2px;}
+.scard-vi-title{font-size:.77rem;color:var(--muted);}
+.diff-badge{font-size:9px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;padding:3px 9px;border-radius:20px;margin-left:auto;flex-shrink:0;background:rgba(232,169,77,.18);color:#b8842a;}
+.scard-body{padding:15px 16px;}
+
+/* ── VI TOGGLE ON DIALOGS ── */
+.vi-toggle-bar{display:flex;align-items:center;justify-content:flex-end;margin-bottom:10px;}
+.vi-toggle-btn{display:flex;align-items:center;gap:5px;background:transparent;border:1.5px solid var(--border);border-radius:20px;padding:5px 12px;font-size:.75rem;font-weight:600;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;}
+.vi-toggle-btn.on{background:rgba(122,158,126,.12);border-color:var(--sage);color:var(--sage);}
+.vi-toggle-btn:active{opacity:.75;}
+
+.dblock{margin-bottom:11px;}
+.dlabel{font-size:9.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;}
+.dlabel.guest{color:var(--terra);}
+.dlabel.staff{color:var(--sage);}
+.dbubble{padding:10px 13px;border-radius:10px;font-size:.86rem;line-height:1.6;font-style:italic;}
+.dbubble.guest{background:rgba(192,87,59,.07);border-left:3px solid var(--terra);color:var(--charcoal);}
+.dbubble.staff{background:rgba(122,158,126,.09);border-left:3px solid var(--sage);color:var(--charcoal);}
+.dvi{display:none;font-size:.79rem;color:var(--sage);margin-top:5px;padding:6px 10px;background:rgba(122,158,126,.08);border-radius:7px;border-left:2px solid var(--sage);font-style:normal;line-height:1.55;}
+.dvi.show{display:block;}
+.dnote{font-size:.75rem;color:var(--muted);margin-top:5px;font-style:normal;padding:5px 8px;background:rgba(200,115,42,.06);border-radius:6px;}
+.key-phrases{margin-top:10px;padding:10px 12px;background:rgba(232,169,77,.07);border-radius:10px;border:1px dashed rgba(232,169,77,.4);}
+.key-label{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--amber);margin-bottom:6px;}
+.key-list{display:flex;flex-wrap:wrap;gap:5px;}
+.key-word{font-size:.77rem;background:rgba(200,115,42,.12);color:var(--amber);padding:3px 9px;border-radius:20px;font-weight:500;font-style:italic;}
+
+/* ── M03 SMALL TALK ── */
+.stgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:13px;margin-top:26px;}
+.stcard{background:linear-gradient(145deg,#fff,var(--warm));border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;position:relative;overflow:hidden;transition:box-shadow .22s;cursor:pointer;}
+.stcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--amber),var(--gold));}
+.stcard:active{box-shadow:0 8px 28px var(--sh);}
+@media(hover:hover){.stcard:hover{box-shadow:0 8px 28px var(--sh);transform:translateY(-2px);}}
+.sttopic{font-size:9.5px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:9px;}
+.stphrase{font-size:.88rem;font-weight:500;color:var(--espresso);line-height:1.55;margin-bottom:7px;}
+.stvi{font-size:.79rem;color:var(--sage);line-height:1.5;margin-bottom:7px;display:none;padding:6px 9px;background:rgba(122,158,126,.08);border-radius:7px;}
+.stvi.show{display:block;}
+.sttip{font-size:.77rem;color:var(--muted);line-height:1.55;padding-top:8px;border-top:1px dashed var(--border);}
+.st-vi-hint{font-size:.72rem;color:var(--muted);margin-top:6px;font-style:italic;}
+
+/* ── M04 REVIEW ── */
+.review-wrap{background:linear-gradient(135deg,var(--mahogany),var(--espresso));padding:60px 16px;}
+.review-wrap .sec-label{color:var(--gold);}
+.review-wrap .sec-title{color:var(--cream);}
+.review-wrap .sec-desc{color:rgba(253,246,236,.58);}
+.rcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px;margin-top:26px;}
+.rcard{background:rgba(253,246,236,.06);border:1px solid rgba(232,169,77,.22);border-radius:var(--radius);padding:18px 16px;transition:background .25s,border-color .25s;}
+.rcard:active{background:rgba(253,246,236,.1);}
+@media(hover:hover){.rcard:hover{background:rgba(253,246,236,.1);border-color:rgba(232,169,77,.45);transform:translateY(-2px);}}
+.rlevel{display:flex;align-items:center;gap:8px;margin-bottom:11px;}
+.rbadge{font-size:9.5px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 11px;border-radius:20px;}
+.rbadge.easy{background:rgba(122,158,126,.25);color:#a8c5ab;}
+.rbadge.warm{background:rgba(232,169,77,.2);color:var(--gold);}
+.rbadge.natural{background:rgba(200,115,42,.25);color:#f0b070;}
+.rbadge.bold{background:rgba(192,87,59,.25);color:#e8907a;}
+.rstars{color:var(--gold);font-size:12px;margin-left:auto;}
+.rtext{font-size:.87rem;color:var(--cream);line-height:1.72;margin-bottom:11px;padding:12px;background:rgba(255,255,255,.05);border-radius:10px;border-left:3px solid var(--gold);}
+.rvi-text{font-size:.79rem;color:rgba(253,246,236,.55);line-height:1.65;margin-bottom:11px;padding:10px 12px;background:rgba(122,158,126,.1);border-radius:8px;border-left:2px solid rgba(122,158,126,.5);display:none;}
+.rvi-text.show{display:block;}
+.rvi-btn{background:transparent;border:1px solid rgba(122,158,126,.4);color:rgba(122,158,126,.8);font-size:.73rem;font-weight:600;padding:5px 12px;border-radius:20px;cursor:pointer;font-family:'DM Sans',sans-serif;margin-bottom:9px;transition:all .18s;}
+.rvi-btn:active,.rvi-btn.on{background:rgba(122,158,126,.15);border-color:rgba(122,158,126,.7);color:#a8c5ab;}
+.ranalysis{font-size:.78rem;color:rgba(253,246,236,.45);line-height:1.6;}
+.ranalysis strong{color:var(--gold);}
+.golden{margin-top:24px;padding:18px;background:rgba(253,246,236,.05);border:1px solid rgba(232,169,77,.18);border-radius:var(--radius);}
+.golden-ttl{color:var(--gold);font-size:.79rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:11px;}
+.golden-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:9px;}
+.golden-item{color:rgba(253,246,236,.62);font-size:.81rem;line-height:1.6;}
+.golden-item .chk{color:var(--gold);}
+.golden-item strong{color:var(--cream);}
+
+/* ── M05 CHATBOT ── */
+.chat-wrap{background:var(--warm);padding:60px 16px 80px;}
+.chat-box{max-width:700px;margin:26px auto 0;background:#fff;border:1px solid var(--border);border-radius:22px;overflow:hidden;box-shadow:0 14px 48px rgba(44,24,16,.11);}
+.chat-hdr{background:linear-gradient(90deg,var(--mahogany),var(--amber));padding:13px 16px;display:flex;align-items:center;gap:11px;}
+.chat-av{width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.chat-info{flex:1;min-width:0;}
+.chat-name{font-size:.88rem;font-weight:600;color:#fff;}
+.chat-sub{font-size:.72rem;color:rgba(255,255,255,.7);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.chat-st{display:flex;align-items:center;gap:5px;font-size:.72rem;color:rgba(255,255,255,.8);}
+.stdot{width:7px;height:7px;background:#5de08b;border-radius:50%;animation:pulse 2s infinite;}
+.spick{padding:9px 14px;background:var(--cream);border-bottom:1px solid var(--border);display:flex;flex-wrap:nowrap;gap:6px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+.spick::-webkit-scrollbar{display:none;}
+.spill{padding:6px 13px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--charcoal);font-size:.77rem;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .18s;white-space:nowrap;min-height:34px;}
+.spill.on{border-color:var(--amber);background:var(--amber);color:#fff;}
+.chat-msgs{height:340px;overflow-y:auto;padding:16px 13px;display:flex;flex-direction:column;gap:12px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;}
+.chat-msgs::-webkit-scrollbar{width:3px;}
+.chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
+.msg{max-width:86%;animation:msgIn .28s ease;}
+.msg.guest{align-self:flex-start;}
+.msg.staff{align-self:flex-end;}
+.msg-name{font-size:.67rem;color:var(--muted);margin-bottom:3px;font-weight:600;}
+.msg.staff .msg-name{text-align:right;}
+.msg-bubble{padding:10px 13px;border-radius:14px;font-size:.86rem;line-height:1.6;}
+.msg.guest .msg-bubble{background:var(--cream);border:1px solid var(--border);border-radius:14px 14px 14px 3px;color:var(--charcoal);}
+.msg.staff .msg-bubble{background:var(--amber);color:#fff;border-radius:14px 14px 3px 14px;}
+.msg-tip{font-size:.71rem;color:var(--muted);margin-top:4px;padding:5px 8px;background:rgba(200,115,42,.07);border-radius:7px;border-left:2px solid var(--amber);}
+.chat-qr{padding:9px 13px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;gap:6px;background:var(--cream);min-height:48px;align-items:center;}
+.qr-btn{padding:6px 11px;border-radius:20px;border:1.5px solid var(--border);background:#fff;color:var(--charcoal);font-size:.76rem;cursor:pointer;font-family:'DM Sans',sans-serif;min-height:34px;}
+.qr-btn:active{border-color:var(--sage);color:var(--sage);}
+.chat-ir{padding:11px 13px;border-top:1px solid var(--border);display:flex;gap:8px;align-items:center;}
+.chat-inp{flex:1;border:1.5px solid var(--border);border-radius:40px;padding:10px 15px;font-size:.87rem;font-family:'DM Sans',sans-serif;color:var(--espresso);background:var(--cream);outline:none;transition:border-color .18s;-webkit-appearance:none;}
+.chat-inp:focus{border-color:var(--amber);}
+.chat-send{width:42px;height:42px;border-radius:50%;background:var(--amber);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.chat-send:active{background:var(--mahogany);}
+.typing-dot{display:inline-flex;gap:4px;padding:2px 0;}
+.typing-dot span{width:6px;height:6px;background:var(--muted);border-radius:50%;animation:bounce 1.1s infinite;}
+.typing-dot span:nth-child(2){animation-delay:.18s;}
+.typing-dot span:nth-child(3){animation-delay:.36s;}
+
+/* ── FOOTER ── */
+footer{background:var(--espresso);padding:34px 16px calc(34px + var(--safe-bottom));text-align:center;color:rgba(253,246,236,.38);font-size:.79rem;}
+footer strong{color:var(--gold);}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:calc(70px + var(--safe-bottom));right:14px;background:var(--espresso);color:var(--cream);padding:10px 16px;border-radius:10px;font-size:.81rem;font-weight:500;opacity:0;transform:translateY(12px);transition:all .28s;pointer-events:none;z-index:999;border-left:3px solid var(--amber);}
+.toast.show{opacity:1;transform:translateY(0);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+
+/* ── RESPONSIVE — MOBILE ── */
+@media(max-width:680px){
+  .bnav{display:flex;}
+  .snav{display:none;}
+  .sec,.review-wrap{padding:48px 14px 56px;}
+  .chat-wrap{padding:48px 14px 100px;}
+  .pgrid,.stgrid,.rcards{grid-template-columns:1fr;}
+  .sgrid{grid-template-columns:1fr;}
+  .hero{padding:50px 16px 90px;}
+  .hero h1{font-size:clamp(1.85rem,7.5vw,2.8rem);}
+  .hero-sub{font-size:.88rem;}
+  .hero-btns{gap:8px;}
+  .btn-p,.btn-o{padding:11px 18px;font-size:.83rem;}
+  .chat-msgs{height:290px;}
+  .chat-box{border-radius:16px;}
+  .spick{padding:8px 12px;}
+  .tabs{gap:6px;}
+  .tab{padding:7px 12px;font-size:.77rem;}
+  .scard-head{flex-wrap:wrap;gap:8px;}
+  .diff-badge{margin-left:0;}
+  footer{padding-bottom:calc(84px + var(--safe-bottom));}
+  .toast{bottom:calc(80px + var(--safe-bottom));right:12px;}
+}
+
+/* ── RESPONSIVE — TABLET ── */
+@media(min-width:681px) and (max-width:1023px){
+  .pgrid{grid-template-columns:repeat(2,1fr);}
+  .stgrid{grid-template-columns:repeat(2,1fr);}
+  .rcards{grid-template-columns:repeat(2,1fr);}
+  .sgrid{grid-template-columns:1fr;}
+  .sec,.review-wrap,.chat-wrap{padding:60px 28px;}
+  .hero{padding:70px 28px 90px;}
+}
+
+/* ── RESPONSIVE — DESKTOP ── */
+@media(min-width:1024px){
+  .sgrid{grid-template-columns:repeat(2,1fr);}
+  .pgrid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr));}
+  .stgrid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));}
+  .rcards{grid-template-columns:repeat(3,1fr);}
+  .pcard:hover .pcopy{opacity:1;}
+  .stcard:hover{box-shadow:0 10px 32px var(--sh);transform:translateY(-3px);}
+  .rcard:hover{background:rgba(253,246,236,.1);border-color:rgba(232,169,77,.45);transform:translateY(-2px);}
+}
+</style>
+</head>
+<body>
+
+<div id="bar"></div>
+
+<nav class="snav" id="snav">
+  <div class="snav-brand">🍽️ FnB English Pro</div>
+  <div class="snav-links">
+    <a href="#theory">Mẫu Câu</a>
+    <a href="#scenarios">Tình Huống</a>
+    <a href="#smalltalk">Small Talk</a>
+    <a href="#review">Google Review</a>
+    <a href="#chatbot">AI Practice</a>
+  </div>
+</nav>
+
+<nav class="bnav" id="bnav">
+  <a href="#theory" class="bnav-item"><span class="ico">📚</span>Mẫu Câu</a>
+  <a href="#scenarios" class="bnav-item"><span class="ico">🎯</span>Tình Huống</a>
+  <a href="#smalltalk" class="bnav-item"><span class="ico">💬</span>Small Talk</a>
+  <a href="#review" class="bnav-item"><span class="ico">⭐</span>Review</a>
+  <a href="#chatbot" class="bnav-item"><span class="ico">🤖</span>Practice</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hdeco hdeco1">🍽️</div>
+  <div class="hdeco hdeco2">☕</div>
+  <div class="hero-badge">✦ Dành riêng cho nhân viên F&amp;B ✦</div>
+  <h1>Tiếng Anh <em>Chuyên Nghiệp</em><br>Cho Nhân Viên Phục Vụ</h1>
+  <p class="hero-sub">Luyện tập thực chiến — nhấn vào bất kỳ câu nào để xem dịch tiếng Việt ngay bên cạnh.</p>
+  <div class="hero-btns">
+    <a href="#theory" class="btn-p">📚 Mẫu Câu</a>
+    <a href="#scenarios" class="btn-o">🎯 Tình Huống</a>
+    <a href="#chatbot" class="btn-o">🤖 Luyện AI</a>
+  </div>
+</section>
+
+<!-- MODULE 01 -->
+<section id="theory" class="sec alt">
+<div class="sec-inner">
+  <div class="sec-label">Module 01</div>
+  <h2 class="sec-title">Lý Thuyết &amp; <em>Mẫu Câu</em></h2>
+  <p class="sec-desc">Nhấn vào thẻ để sao chép. Tiếng Việt hiển thị sẵn bên dưới mỗi câu.</p>
+  <div class="tabs" id="tabsRow">
+    <button class="tab on" data-cat="all">Tất Cả</button>
+    <button class="tab" data-cat="greeting">👋 Chào Đón</button>
+    <button class="tab" data-cat="seating">🪑 Xếp Chỗ</button>
+    <button class="tab" data-cat="order">📋 Gọi Món</button>
+    <button class="tab" data-cat="serving">🍽️ Phục Vụ</button>
+    <button class="tab" data-cat="payment">💳 Thanh Toán</button>
+    <button class="tab" data-cat="farewell">🙏 Tiễn Khách</button>
+  </div>
+  <div class="pgrid" id="pgrid"></div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MODULE 02 -->
+<section id="scenarios" class="sec">
+<div class="sec-inner">
+  <div class="sec-label">Module 02</div>
+  <h2 class="sec-title">Xử Lý <em>Tình Huống Khó</em></h2>
+  <p class="sec-desc">6 kịch bản trung cấp — nhấn <strong style="color:var(--sage)">🇻🇳 Xem tiếng Việt</strong> để hiện bản dịch ngay bên dưới mỗi câu.</p>
+  <div class="s-tabs" id="sTabsRow">
+    <button class="s-tab on" data-lvl="all">Tất Cả (6)</button>
+    <button class="s-tab" data-lvl="food">🍽️ Về Món Ăn</button>
+    <button class="s-tab" data-lvl="service">🔔 Về Dịch Vụ</button>
+    <button class="s-tab" data-lvl="guest">👨‍👩‍👧 Khách Đặc Biệt</button>
+  </div>
+  <div class="sgrid" id="sgrid"></div>
+</div>
+</section>
+
+<!-- MODULE 03 -->
+<section id="smalltalk" class="sec alt">
+<div class="sec-inner">
+  <div class="sec-label">Module 03</div>
+  <h2 class="sec-title">Small Talk &amp; <em>Kết Nối</em></h2>
+  <p class="sec-desc">Nhấn vào thẻ để xem bản dịch tiếng Việt — hiểu đúng sắc thái để dùng tự nhiên hơn.</p>
+  <div class="stgrid" id="stgrid"></div>
+</div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MODULE 04 -->
+<section id="review" class="review-wrap">
+<div class="sec-inner">
+  <div class="sec-label">Module 04 — Đặc Biệt</div>
+  <h2 class="sec-title">Xin Đánh Giá Google Maps<br><em>Tinh Tế &amp; Chân Thành</em></h2>
+  <p class="sec-desc">6 mẫu câu từ nhẹ nhàng đến chủ động — nhấn "Xem tiếng Việt" để đối chiếu từng câu.</p>
+  <div class="rcards" id="rcards"></div>
+  <div class="golden">
+    <div class="golden-ttl">💡 Nguyên Tắc Vàng</div>
+    <div class="golden-grid">
+      <div class="golden-item"><span class="chk">✓</span> Chỉ xin review khi <strong>khách đã thật sự hài lòng</strong></div>
+      <div class="golden-item"><span class="chk">✓</span> Đặt trải nghiệm của khách <strong>lên trên hết</strong></div>
+      <div class="golden-item"><span class="chk">✓</span> Giải thích <strong>lý do thật</strong> — khách Tây rất muốn giúp</div>
+      <div class="golden-item"><span class="chk">✓</span> Nếu khách từ chối, <strong>cảm ơn và không nhắc lại</strong></div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- MODULE 05 -->
+<section id="chatbot" class="chat-wrap">
+<div class="sec-inner">
+  <div class="sec-label">Module 05 — Practice Zone</div>
+  <h2 class="sec-title">AI Chat <em>Practice</em></h2>
+  <p class="sec-desc">Chọn kịch bản và luyện phản xạ. Nhấn câu gợi ý hoặc tự gõ phản hồi của bạn!</p>
+  <div class="chat-box">
+    <div class="chat-hdr">
+      <div class="chat-av">👩‍💼</div>
+      <div class="chat-info">
+        <div class="chat-name">Sarah Mitchell</div>
+        <div class="chat-sub">Tourist from Melbourne, Australia 🇦🇺</div>
+      </div>
+      <div class="chat-st"><div class="stdot"></div><span>Online</span></div>
+    </div>
+    <div class="spick" id="spick">
+      <button class="spill on" data-scene="arrival">Đón Khách</button>
+      <button class="spill" data-scene="order">Gọi Món</button>
+      <button class="spill" data-scene="complaint">Phàn Nàn</button>
+      <button class="spill" data-scene="allergy">Dị Ứng</button>
+      <button class="spill" data-scene="review">Xin Review</button>
+    </div>
+    <div class="chat-msgs" id="chatMsgs"></div>
+    <div class="chat-qr" id="chatQR"></div>
+    <div class="chat-ir">
+      <input class="chat-inp" id="chatInput" type="text" placeholder="Gõ câu trả lời tiếng Anh..." autocomplete="off"/>
+      <button class="chat-send" id="chatSend">&#10148;</button>
+    </div>
+  </div>
+</div>
+</section>
+
+
+
+<footer>
+  <div style="font-size:1.3rem;margin-bottom:8px;">🍽️</div>
+  <div>Xây dựng cho <strong>Nhân viên F&amp;B Việt Nam</strong> — Tự tin giao tiếp, tạo dựng sự nghiệp</div>
+  <div style="margin-top:6px;">Tham khảo: <strong>KISS English</strong> &amp; Chuyên gia Hospitality</div>
+</footer>
+
+<div class="toast" id="toast">✓ Đã sao chép!</div>
+
+<script>
+/* =============================================================
+   DATA
+   ============================================================= */
+var PHRASES = [
+  {cat:"greeting",tag:"Chào Đón",en:"Good evening! Welcome. How many people tonight?",vi:"Chào buổi tối! Chào mừng quý khách. Bàn của quý khách gồm mấy người ạ?"},
+  {cat:"greeting",tag:"Chào Đón",en:"Hello! Do you have a reservation with us?",vi:"Xin chào! Quý khách có đặt bàn trước không ạ?"},
+  {cat:"greeting",tag:"Chào Đón",en:"Welcome! Please follow me to your table.",vi:"Chào mừng! Xin mời quý khách đi theo tôi ra bàn ạ."},
+  {cat:"greeting",tag:"Chào Đón",en:"Good to see you again! Your usual table is ready.",vi:"Thật vui khi gặp lại! Bàn quen của quý khách đã sẵn sàng rồi ạ."},
+  {cat:"greeting",tag:"Chào Đón",en:"Let me check our availability for you right away.",vi:"Để tôi kiểm tra chỗ trống cho quý khách ngay ạ."},
+  {cat:"greeting",tag:"Chào Đón",en:"Dining in or takeaway today?",vi:"Quý khách dùng bữa tại đây hay mang về ạ?"},
+  {cat:"seating",tag:"Xếp Chỗ",en:"Window seat or inside — which do you prefer?",vi:"Quý khách thích ngồi cạnh cửa sổ hay trong nhà hơn ạ?"},
+  {cat:"seating",tag:"Xếp Chỗ",en:"Is this table comfortable for you?",vi:"Bàn này có thoải mái với quý khách không ạ?"},
+  {cat:"seating",tag:"Xếp Chỗ",en:"Any seating preferences I should know?",vi:"Quý khách có yêu cầu gì đặc biệt về chỗ ngồi không ạ?"},
+  {cat:"seating",tag:"Xếp Chỗ",en:"We have a lovely spot by the terrace — would that suit you?",vi:"Chúng tôi có chỗ đẹp gần ban công, quý khách có muốn không ạ?"},
+  {cat:"seating",tag:"Xếp Chỗ",en:"Make yourself comfortable. I will be right back with the menu.",vi:"Quý khách cứ ngồi thoải mái. Tôi sẽ mang thực đơn ra ngay ạ."},
+  {cat:"seating",tag:"Xếp Chỗ",en:"Would you like a high chair for your child?",vi:"Quý khách có muốn ghế cao cho bé không ạ?"},
+  {cat:"order",tag:"Gọi Món",en:"Ready to order, or need a few more minutes?",vi:"Quý khách đã sẵn sàng gọi món chưa, hay cần thêm vài phút ạ?"},
+  {cat:"order",tag:"Gọi Món",en:"Happy to walk you through today's specials!",vi:"Tôi rất vui được giới thiệu các món đặc biệt hôm nay ạ!"},
+  {cat:"order",tag:"Gọi Món",en:"Excellent choice! One of our most popular dishes.",vi:"Lựa chọn tuyệt vời ạ! Đây là một trong những món được yêu thích nhất."},
+  {cat:"order",tag:"Gọi Món",en:"Any dietary restrictions or allergies I should know about?",vi:"Quý khách có kiêng ăn gì hoặc dị ứng thực phẩm nào không ạ?"},
+  {cat:"order",tag:"Gọi Món",en:"How would you like your steak — rare, medium, or well-done?",vi:"Quý khách muốn bò nướng tái, vừa, hay chín hẳn ạ?"},
+  {cat:"order",tag:"Gọi Món",en:"Spicy, mild, or no spice at all?",vi:"Quý khách muốn ăn cay, ít cay, hay không cay ạ?"},
+  {cat:"order",tag:"Gọi Món",en:"Something to drink while you look at the menu?",vi:"Trong khi xem thực đơn, quý khách có muốn dùng gì không ạ?"},
+  {cat:"order",tag:"Gọi Món",en:"Let me repeat your order to confirm — is that correct?",vi:"Để tôi nhắc lại order để xác nhận — có đúng không ạ?"},
+  {cat:"order",tag:"Gọi Món",en:"May I suggest the grilled sea bass? It pairs beautifully with our lemon butter sauce.",vi:"Tôi có thể gợi ý cá vược nướng không ạ? Rất hợp với sốt bơ chanh của chúng tôi."},
+  {cat:"order",tag:"Gọi Món",en:"Would you like a starter while you wait for the main?",vi:"Quý khách có muốn gọi khai vị trong khi chờ món chính không ạ?"},
+  {cat:"serving",tag:"Phục Vụ",en:"Here is your dish — enjoy!",vi:"Đây là món của quý khách. Chúc ngon miệng ạ!"},
+  {cat:"serving",tag:"Phục Vụ",en:"Careful — the plate is very hot.",vi:"Quý khách chú ý, đĩa rất nóng ạ."},
+  {cat:"serving",tag:"Phục Vụ",en:"Is everything to your liking so far?",vi:"Đến giờ quý khách thấy mọi thứ ổn không ạ?"},
+  {cat:"serving",tag:"Phục Vụ",en:"May I refill your water?",vi:"Để tôi rót thêm nước cho quý khách nhé ạ?"},
+  {cat:"serving",tag:"Phục Vụ",en:"Sorry for the wait. Your dish will be ready in a few minutes.",vi:"Xin lỗi quý khách phải đợi. Món sẽ sẵn sàng trong vài phút nữa ạ."},
+  {cat:"serving",tag:"Phục Vụ",en:"Can I get you anything else right now?",vi:"Quý khách có cần thêm gì không ạ?"},
+  {cat:"serving",tag:"Phục Vụ",en:"How is everything? Are you enjoying the meal?",vi:"Quý khách thấy món ăn thế nào ạ? Có ngon miệng không?"},
+  {cat:"serving",tag:"Phục Vụ",en:"Allow me to clear these plates for you.",vi:"Để tôi dọn đĩa cho quý khách ạ."},
+  {cat:"serving",tag:"Phục Vụ",en:"Almost ready with your other dishes. Thank you for your patience!",vi:"Các món còn lại sắp xong rồi ạ. Cảm ơn quý khách đã kiên nhẫn!"},
+  {cat:"payment",tag:"Thanh Toán",en:"Dessert menu before the bill?",vi:"Quý khách có muốn xem thực đơn tráng miệng trước khi thanh toán không ạ?"},
+  {cat:"payment",tag:"Thanh Toán",en:"I will bring the bill right away.",vi:"Tôi sẽ mang hóa đơn ra ngay ạ."},
+  {cat:"payment",tag:"Thanh Toán",en:"Cash or card?",vi:"Quý khách muốn thanh toán bằng tiền mặt hay thẻ ạ?"},
+  {cat:"payment",tag:"Thanh Toán",en:"Would you like to split the bill?",vi:"Quý khách có muốn chia hóa đơn không ạ?"},
+  {cat:"payment",tag:"Thanh Toán",en:"Split equally, or by individual orders?",vi:"Chia đều hay theo từng order riêng ạ?"},
+  {cat:"payment",tag:"Thanh Toán",en:"Your total is [amount]. Here is your receipt.",vi:"Tổng cộng là [số tiền] ạ. Đây là hóa đơn của quý khách."},
+  {cat:"payment",tag:"Thanh Toán",en:"We accept all major cards and mobile payment.",vi:"Chúng tôi nhận tất cả thẻ tín dụng chính và thanh toán di động ạ."},
+  {cat:"farewell",tag:"Tiễn Khách",en:"I hope you had a wonderful experience tonight!",vi:"Tôi hy vọng quý khách đã có một bữa tối thật tuyệt vời ạ!"},
+  {cat:"farewell",tag:"Tiễn Khách",en:"It was my pleasure to serve you. Come back soon!",vi:"Thật hạnh phúc được phục vụ quý khách. Hẹn gặp lại sớm ạ!"},
+  {cat:"farewell",tag:"Tiễn Khách",en:"Safe travels and enjoy the rest of your time in Vietnam!",vi:"Chúc quý khách đi đường bình an và tận hưởng thời gian còn lại ở Việt Nam ạ!"},
+  {cat:"farewell",tag:"Tiễn Khách",en:"Thank you so much for dining with us tonight.",vi:"Cảm ơn quý khách rất nhiều đã chọn nhà hàng chúng tôi tối nay ạ."},
+  {cat:"farewell",tag:"Tiễn Khách",en:"We hope to see you again on your next visit!",vi:"Chúng tôi hy vọng được gặp lại quý khách trong lần ghé thăm tiếp theo ạ!"}
+];
+
+var SCENARIOS = [
+  {cat:"food",icon:"😤",title:"Complaint About Food Quality",vi:"Khách phàn nàn về chất lượng món ăn",
+   keys:["I sincerely apologize","not acceptable","replace right away","let me take this back"],
+   dialogs:[
+    {role:"guest",en:"Excuse me, this steak is way too tough. I ordered medium but this is clearly overcooked. I really cannot eat it like this.",vi:"Xin lỗi, miếng bò này quá dai. Tôi gọi medium nhưng đây rõ ràng là chín quá rồi. Tôi không thể ăn như thế này được.",note:""},
+    {role:"staff",en:"I sincerely apologize — that is absolutely not acceptable, and I completely understand your frustration. Let me take this back to the kitchen right away and have a fresh one prepared for you, cooked exactly to medium. I will personally make sure it is right this time.",vi:"Tôi thành thật xin lỗi — điều đó hoàn toàn không thể chấp nhận được, và tôi hoàn toàn hiểu sự khó chịu của quý khách. Để tôi mang món này trả lại bếp ngay và chuẩn bị cho quý khách một đĩa mới, nấu đúng độ medium. Lần này tôi sẽ đích thân đảm bảo món ăn đúng yêu cầu.",note:"💡 Không phòng thủ, không giải thích lý do — xin lỗi ngay và cam kết hành động cụ thể. Từ khoá: 'not acceptable' + 'right away' + 'personally make sure'."},
+    {role:"guest",en:"Okay, thank you. How long will it take?",vi:"Được, cảm ơn bạn. Mất bao lâu vậy?",note:""},
+    {role:"staff",en:"It should be around 10 to 12 minutes. In the meantime, may I bring you some fresh bread and a complimentary drink while you wait? Again, I am truly sorry for this inconvenience.",vi:"Khoảng 10 đến 12 phút ạ. Trong lúc chờ, tôi có thể mang cho quý khách một ít bánh mì tươi và đồ uống miễn phí không? Một lần nữa, tôi thành thật xin lỗi vì sự bất tiện này.",note:"💡 Đưa ra thời gian cụ thể → Đề xuất bù đắp ngay → Xin lỗi lần cuối để kết thúc tự nhiên."}
+  ]},
+  {cat:"food",icon:"🍷",title:"Guest Wants to Return or Change Dish",vi:"Khách muốn đổi hoặc trả món",
+   keys:["check with the kitchen","not yet started","absolutely change it","accommodate"],
+   dialogs:[
+    {role:"guest",en:"Sorry, I just realized I ordered the wrong thing. Can I swap my tom yum soup for the pho instead?",vi:"Xin lỗi, tôi vừa nhận ra mình gọi nhầm món. Tôi có thể đổi súp tom yum thành phở không?",note:""},
+    {role:"staff",en:"Of course! Let me check with the kitchen right now to see if your soup has been started yet. If not, we can absolutely swap it — give me just one moment.",vi:"Dĩ nhiên rồi ạ! Để tôi kiểm tra với bếp ngay xem súp của quý khách đã được bắt đầu làm chưa. Nếu chưa, chúng tôi có thể đổi ngay — chỉ một chút thôi ạ.",note:"💡 Không từ chối ngay — luôn kiểm tra trước. Dùng 'of course' và 'absolutely' để thể hiện thiện chí."},
+    {role:"guest",en:"Sure, thank you!",vi:"Được, cảm ơn bạn!",note:""},
+    {role:"staff",en:"Great news — the kitchen has not started on it yet, so we can make the change! I will have your pho out as soon as possible. Is there anything else I can adjust for you?",vi:"Tin vui đây — bếp chưa bắt đầu làm súp, nên chúng tôi có thể đổi được! Tôi sẽ mang phở ra cho quý khách sớm nhất có thể. Còn điều gì tôi có thể điều chỉnh cho quý khách không ạ?",note:"💡 Kết thúc bằng câu hỏi mở — thể hiện bạn sẵn sàng giúp thêm. Nếu bếp đã làm rồi: 'I am so sorry, the kitchen has already started. However, may I suggest...'"}
+  ]},
+  {cat:"food",icon:"🤧",title:"Guest Has a Food Allergy",vi:"Khách bị dị ứng thực phẩm",
+   keys:["take this very seriously","check directly with the chef","do not order yet","safe for you","shellfish-free"],
+   dialogs:[
+    {role:"guest",en:"Hi, I have a severe shellfish allergy. I want to order the fried rice — can you tell me if it has any shellfish in it?",vi:"Xin chào, tôi bị dị ứng hải sản nặng. Tôi muốn gọi cơm chiên — bạn có thể cho tôi biết trong đó có hải sản không?",note:""},
+    {role:"staff",en:"Thank you so much for letting me know — we take allergies very seriously here. I want to make sure you are completely safe, so let me check directly with the chef before you order. Please do not order anything just yet — I will be right back.",vi:"Cảm ơn quý khách rất nhiều đã thông báo — chúng tôi xem trọng vấn đề dị ứng rất nghiêm túc. Tôi muốn đảm bảo quý khách hoàn toàn an toàn, nên để tôi kiểm tra trực tiếp với đầu bếp trước khi quý khách đặt món. Quý khách chưa đặt gì nhé — tôi sẽ quay lại ngay.",note:"💡 Cảm ơn khách đã thông báo (quan trọng!) → Không đoán mò, không nói 'I think' hay 'probably' → Kiểm tra với bếp là bắt buộc."},
+    {role:"guest",en:"Sure, I appreciate that.",vi:"Được, tôi cảm ơn bạn.",note:""},
+    {role:"staff",en:"I just confirmed with the chef — the fried rice does contain dried shrimp, so it is not safe for you. However, our vegetable stir-fry and the grilled chicken rice are both completely shellfish-free. Would either of those work for you?",vi:"Tôi vừa xác nhận với đầu bếp — cơm chiên có chứa tôm khô, nên không an toàn cho quý khách. Tuy nhiên, món rau xào và cơm gà nướng của chúng tôi đều hoàn toàn không có hải sản. Quý khách có muốn thử một trong hai món đó không ạ?",note:"💡 Báo kết quả rõ ràng → Đề xuất ngay 2 lựa chọn an toàn thay thế → Không để khách bị bế tắc."}
+  ]},
+  {cat:"service",icon:"📵",title:"Noise Complaint — Nearby Table",vi:"Khách phàn nàn về tiếng ồn / bàn kế bên",
+   keys:["I understand completely","I am sorry for the discomfort","move to a quieter spot","I appreciate your patience"],
+   dialogs:[
+    {role:"guest",en:"Excuse me, the group next to us is really loud. It is making it hard to have a conversation. Is there anything you can do?",vi:"Xin lỗi, nhóm khách bên cạnh chúng tôi ồn quá. Chúng tôi khó mà nói chuyện được. Bạn có thể làm gì không?",note:""},
+    {role:"staff",en:"I completely understand — I am sorry this is affecting your experience. Let me look into a quieter table for you right now. If we have one available, I would be happy to move you over. Could you give me just one moment to check?",vi:"Tôi hoàn toàn hiểu — tôi xin lỗi vì điều này ảnh hưởng đến trải nghiệm của quý khách. Để tôi tìm một bàn yên tĩnh hơn cho quý khách ngay. Nếu có chỗ trống, tôi rất vui được sắp xếp cho quý khách. Quý khách cho tôi một chút để kiểm tra nhé?",note:"💡 Đồng cảm thật sự, không bào chữa → Đề xuất giải pháp cụ thể ngay → Không hứa 'sẽ bảo bàn kia yên' vì bạn không kiểm soát được điều đó."},
+    {role:"guest",en:"Yes please, that would be great.",vi:"Vâng, làm vậy thì tốt quá.",note:""},
+    {role:"staff",en:"I found a quieter table for you near the window — it is a lovely spot. Please follow me and I will have your food and drinks transferred over right away. I truly appreciate your patience!",vi:"Tôi đã tìm được một bàn yên tĩnh hơn cho quý khách gần cửa sổ — vị trí rất đẹp ạ. Xin mời quý khách đi theo tôi và tôi sẽ chuyển đồ ăn và thức uống sang ngay. Tôi thực sự cảm ơn sự kiên nhẫn của quý khách!",note:"💡 Đưa ra giải pháp cụ thể và tích cực (gần cửa sổ, đẹp hơn) → Xử lý việc chuyển đồ cho khách → Cảm ơn sự kiên nhẫn để kết thúc tích cực."}
+  ]},
+  {cat:"guest",icon:"🐣",title:"Family with a Young Child",vi:"Khách có trẻ em / cần ghế cao",
+   keys:["high chair","right away","mild and soft","not spicy at all","let me know if you need anything"],
+   dialogs:[
+    {role:"guest",en:"Hi, we have a 2-year-old with us. Do you have a high chair? And do you have any kid-friendly food options?",vi:"Xin chào, chúng tôi có một bé 2 tuổi. Bạn có ghế cao không? Và có món nào phù hợp cho trẻ em không?",note:""},
+    {role:"staff",en:"Of course — welcome! Let me grab a high chair for you right away. As for the menu, we have a few mild dishes that are perfect for young children — our steamed egg with rice is very popular with little ones, and it is soft and not spicy at all.",vi:"Dĩ nhiên — chào mừng quý khách! Để tôi mang ghế cao ra ngay. Về thực đơn, chúng tôi có một vài món nhẹ nhàng rất phù hợp cho trẻ nhỏ — trứng hấp với cơm rất được các bé yêu thích, mềm và hoàn toàn không cay.",note:"💡 Chào đón nhiệt tình → Xử lý ghế cao ngay → Chủ động gợi ý món phù hợp cho trẻ (dùng từ 'mild', 'soft', 'not spicy')."},
+    {role:"guest",en:"Oh that sounds perfect! She is a picky eater so simple is best.",vi:"Ồ nghe hay đó! Bé nhà tôi kén ăn lắm nên đơn giản là tốt nhất.",note:""},
+    {role:"staff",en:"Completely understood! We can also keep the seasoning very light if you prefer. Just let me know how you would like it prepared, and we will make sure she enjoys her meal. I will be back in just a moment with the high chair!",vi:"Tôi hoàn toàn hiểu! Chúng tôi cũng có thể nêm gia vị rất nhẹ nếu quý khách muốn. Quý khách cứ cho tôi biết cách chế biến, chúng tôi sẽ đảm bảo bé thích bữa ăn. Tôi sẽ mang ghế cao ra ngay!",note:"💡 Linh hoạt với yêu cầu đặc biệt → Cam kết chăm sóc cả gia đình → Kết thúc bằng hành động cụ thể tiếp theo."}
+  ]},
+  {cat:"service",icon:"⏰",title:"Guest Needs to Leave by a Fixed Time",vi:"Khách yêu cầu phục vụ gấp vì có lịch",
+   keys:["absolutely","let the kitchen know right away","priority order","check back with you","make it work"],
+   dialogs:[
+    {role:"guest",en:"Hi, we need to be out of here by 7:30 — we have a show to catch. Is that going to be a problem?",vi:"Xin chào, chúng tôi cần ra về trước 7:30 — chúng tôi có chương trình xem. Có vấn đề gì không?",note:""},
+    {role:"staff",en:"Absolutely not — we will make it work for you! I will let the kitchen know right away that your table needs to be finished by 7:30. To help move things along, may I suggest a few dishes that are quick to prepare? Or if you already know what you want, I can take your order immediately.",vi:"Hoàn toàn không — chúng tôi sẽ sắp xếp được cho quý khách! Tôi sẽ báo bếp ngay rằng bàn này cần xong trước 7:30. Để đẩy nhanh tiến độ, tôi có thể gợi ý một vài món chuẩn bị nhanh không? Hoặc nếu quý khách đã biết muốn gì, tôi có thể nhận order ngay.",note:"💡 Cam kết ngay bằng 'Absolutely not' → Báo bếp ngay → Chủ động đề xuất cách tăng tốc. Không hứa điều không thể giữ."},
+    {role:"guest",en:"Great! We are ready to order now.",vi:"Tuyệt! Chúng tôi sẵn sàng gọi món rồi.",note:""},
+    {role:"staff",en:"Perfect — please go ahead! I will also check back with you around 7:15 to make sure everything is on track. Do not worry, we will get you out in time.",vi:"Hoàn hảo — quý khách cứ gọi ạ! Tôi cũng sẽ ghé qua kiểm tra lại với quý khách khoảng 7:15 để chắc chắn mọi thứ đúng tiến độ. Quý khách đừng lo, chúng tôi sẽ đảm bảo quý khách ra về kịp giờ.",note:"💡 Nhận order ngay → Hẹn kiểm tra lại lúc 7:15 (hành động cụ thể) → Câu kết thúc tự tin và tích cực: 'we will get you out in time'."}
+  ]}
+];
+
+var SMALLTALK = [
+  {topic:"Lịch Trình Du Lịch",phrase:"\"How long are you staying in Vietnam? First time here?\"",vi:"\"Quý khách ở Việt Nam bao lâu vậy? Đây là lần đầu quý khách đến đây không?\"",tip:"✦ Câu hỏi ngắn, dễ trả lời. Lắng nghe và tiếp nối tự nhiên thay vì hỏi cho có."},
+  {topic:"Cảm Nhận Ẩm Thực",phrase:"\"Is this your first time trying Vietnamese food? How do you like it so far?\"",vi:"\"Đây là lần đầu quý khách thử ẩm thực Việt Nam không? Quý khách thấy thế nào rồi?\"",tip:"✦ Nếu khách thích, gợi ý thêm món khác để thử trong chuyến đi."},
+  {topic:"Gợi Ý Tham Quan",phrase:"\"Have you visited any local markets or temples yet? I know some hidden gems nearby!\"",vi:"\"Quý khách đã ghé chợ địa phương hay chùa nào chưa? Tôi biết vài địa điểm ít người biết ở gần đây!\"",tip:"✦ Biến mình thành 'local guide' — đây là giá trị thêm khách du lịch rất trân trọng."},
+  {topic:"Thành Phố",phrase:"\"What has been your favorite part of the city so far?\"",vi:"\"Đến giờ phần nào của thành phố là quý khách thích nhất?\"",tip:"✦ Câu hỏi mở, thường mở ra câu chuyện dài và thú vị về cảm nhận của khách."},
+  {topic:"Chia Sẻ Cá Nhân",phrase:"\"This is my favorite dish here too — the chef adds a special touch that makes it unique.\"",vi:"\"Đây cũng là món tôi yêu thích nhất ở đây — đầu bếp có một bí quyết riêng làm món này đặc biệt hơn.\"",tip:"✦ Chia sẻ ngắn gọn làm cuộc trò chuyện thật hơn và ấm áp hơn rất nhiều."},
+  {topic:"Thời Tiết",phrase:"\"It has been pretty hot lately — I hope you are staying hydrated! We have fresh coconut water if you like.\"",vi:"\"Dạo này trời khá nóng — tôi hy vọng quý khách uống đủ nước! Chúng tôi có nước dừa tươi nếu quý khách muốn.\"",tip:"✦ Dùng thời tiết làm cầu nối, đồng thời khéo léo gợi ý thêm đồ uống."},
+  {topic:"Kết Nối Văn Hóa",phrase:"\"I am curious — what is the food like back home compared to Vietnamese cuisine?\"",vi:"\"Tôi tò mò lắm — ẩm thực ở quê nhà của quý khách so với ẩm thực Việt Nam thì thế nào?\"",tip:"✦ Bày tỏ sự tò mò thật sự về văn hóa khách — họ sẽ cảm thấy được tôn trọng và thấy thú vị."},
+  {topic:"Lời Khuyên Thực Tiễn",phrase:"\"If you visit the old quarter, go early morning — it is much quieter and more beautiful then.\"",vi:"\"Nếu quý khách đến phố cổ, hãy đi buổi sáng sớm — lúc đó yên tĩnh và đẹp hơn nhiều.\"",tip:"✦ Lời khuyên cụ thể và thực tiễn để lại ấn tượng rất tốt, lâu dài trong ký ức khách."},
+  {topic:"Tiếp Nối Sau Bữa Ăn",phrase:"\"Do you have any plans for the rest of the evening? I can recommend a great rooftop bar nearby.\"",vi:"\"Quý khách có kế hoạch gì cho buổi tối không? Tôi có thể giới thiệu một quán bar trên sân thượng rất đẹp gần đây.\"",tip:"✦ Thể hiện bạn quan tâm đến toàn bộ trải nghiệm của khách, không chỉ bữa ăn."},
+  {topic:"Hỏi Về Chuyến Đi",phrase:"\"Are you traveling solo or with a group? Have you had a chance to explore much of Vietnam?\"",vi:"\"Quý khách đi một mình hay theo nhóm? Quý khách đã có dịp khám phá nhiều nơi ở Việt Nam chưa?\"",tip:"✦ Câu hỏi mở về hành trình — thường khơi gợi nhiều câu chuyện thú vị từ phía khách."},
+  {topic:"Sau Chuyến Đi",phrase:"\"Where are you heading after Ho Chi Minh City? Hoi An and Hanoi are both worth a visit!\"",vi:"\"Sau Hồ Chí Minh quý khách sẽ đi đâu tiếp? Hội An và Hà Nội đều rất đáng ghé thăm!\"",tip:"✦ Thể hiện kiến thức về đất nước và niềm tự hào về văn hóa Việt Nam một cách tự nhiên."},
+  {topic:"Phản Hồi Tích Cực",phrase:"\"I am so glad you enjoyed it! Did you have a favorite dish tonight that you might order again?\"",vi:"\"Tôi rất vui khi quý khách thích! Tối nay quý khách có món nào yêu thích nhất mà muốn gọi lại không?\"",tip:"✦ Kéo dài cuộc trò chuyện tích cực → Tự nhiên dẫn vào việc xin review hoặc gợi ý lần sau."}
+];
+
+var REVIEWS = [
+  {level:"easy",badge:"Nhẹ Nhàng",
+   en:"Thank you so much for dining with us tonight! If you enjoyed the food and service, it would mean a lot if you could leave a quick review on Google Maps and mention my name — [Your Name]. It really helps my career here. Have a great time in Vietnam!",
+   vi:"Cảm ơn quý khách rất nhiều đã dùng bữa tối nay! Nếu quý khách thích đồ ăn và dịch vụ, sẽ rất có ý nghĩa với tôi nếu quý khách có thể để lại một đánh giá nhanh trên Google Maps và đề cập tên tôi — [Tên bạn]. Điều đó thực sự giúp ích cho sự nghiệp của tôi ở đây. Chúc quý khách có thời gian tuyệt vời ở Việt Nam!",
+   analysis:"Nhấn mạnh bạn đã <strong>rất vui</strong> khi phục vụ. Lý do thành thật nhưng nhẹ nhàng, không áp lực."},
+  {level:"warm",badge:"Chân Thành",
+   en:"I am so glad you enjoyed the meal! Our management actually rewards staff who get mentioned in positive Google reviews. If you have just a minute to share your experience and mention my name — [Your Name] — I would be incredibly grateful. Safe travels and please come back!",
+   vi:"Tôi rất vui vì quý khách thích bữa ăn! Thật ra quản lý của chúng tôi có chính sách thưởng cho nhân viên được đề cập trong đánh giá Google tích cực. Nếu quý khách có một phút chia sẻ trải nghiệm và đề cập tên tôi — [Tên bạn] — tôi sẽ vô cùng biết ơn. Chúc đi đường bình an và quay lại nhé!",
+   analysis:"Trình bày <strong>thẳng thắn về chính sách thưởng</strong>. Khách Tây thường rất sẵn lòng giúp khi biết điều đó mang lại lợi ích thiết thực."},
+  {level:"natural",badge:"Tự Nhiên",
+   en:"It was a pleasure serving you! Mentioning my name — [Your Name] — on Google Maps goes a long way in helping me grow in my role here. Thank you, and enjoy the rest of your trip!",
+   vi:"Thật vui khi được phục vụ quý khách! Việc đề cập tên tôi — [Tên bạn] — trên Google Maps có ý nghĩa rất lớn trong việc giúp tôi phát triển trong công việc. Cảm ơn quý khách và chúc chuyến đi còn lại thật vui!",
+   analysis:"Từ <strong>'grow' (phát triển)</strong> tạo cảm giác khách đang giúp một người cầu tiến. Ngắn, tự nhiên, hiệu quả."},
+  {level:"bold",badge:"Kể Chuyện",
+   en:"You know, reviews with staff names actually help us get promoted here. I have been working here for two years and I really love this job. If you felt well taken care of tonight, it would mean the world to me if you could mention my name — [Your Name] — in a Google review. Thank you so much!",
+   vi:"Quý khách biết không, những đánh giá có tên nhân viên thực sự giúp chúng tôi được thăng tiến ở đây. Tôi đã làm việc ở đây hai năm rồi và tôi thực sự yêu công việc này. Nếu quý khách cảm thấy được chăm sóc tốt tối nay, sẽ có ý nghĩa rất lớn với tôi nếu quý khách đề cập tên tôi — [Tên bạn] — trong đánh giá Google. Cảm ơn quý khách rất nhiều!",
+   analysis:"Kể câu chuyện cá nhân ngắn gọn tạo <strong>kết nối cảm xúc</strong>. Rất hiệu quả với khách có tính cách ấm áp, thích tương tác."},
+  {level:"easy",badge:"Cuối Bữa",
+   en:"Before you go — did you enjoy everything tonight? I ask because our restaurant tracks feedback through Google reviews, and if you mention my name — [Your Name] — it really helps me stand out. No pressure at all, but it would genuinely make my evening!",
+   vi:"Trước khi quý khách ra về — tối nay quý khách có thích mọi thứ không? Tôi hỏi vì nhà hàng chúng tôi theo dõi phản hồi qua đánh giá Google, và nếu quý khách đề cập tên tôi — [Tên bạn] — điều đó thực sự giúp tôi nổi bật. Không có áp lực gì cả, nhưng điều đó thực sự sẽ làm buổi tối của tôi vui hơn!",
+   analysis:"Câu <strong>'No pressure at all'</strong> giải tỏa áp lực hoàn toàn. 'Make my evening' là cụm từ thân thiện, gần gũi, tự nhiên."},
+  {level:"warm",badge:"Nhóm / Sự Kiện",
+   en:"It was such a pleasure taking care of your group tonight! For large parties like yours, a Google review mentioning your experience and my name — [Your Name] — is actually the most impactful thing guests can do for staff here. If you have a moment, we would all be so grateful. Thank you and hope to host you again!",
+   vi:"Thật vui khi được chăm sóc nhóm của quý khách tối nay! Với các bàn lớn như nhóm quý khách, một đánh giá Google đề cập trải nghiệm và tên tôi — [Tên bạn] — thực ra là điều có tác động lớn nhất mà khách có thể làm cho nhân viên ở đây. Nếu quý khách có một chút thời gian, chúng tôi sẽ rất biết ơn. Cảm ơn và hy vọng được đón tiếp quý khách lần nữa!",
+   analysis:"Phù hợp khi phục vụ <strong>nhóm đông hoặc sự kiện</strong>. Nhấn vào 'most impactful' để khách hiểu review nhóm có giá trị cao hơn."}
+];
+
+var CHAT = {
+  arrival:{
+    opener:{role:"guest",text:"Hi! Table for two, please. We don't have a reservation."},
+    replies:[
+      {text:"Welcome! Let me check availability for you right away.",tip:"Chào đón nhiệt tình, không tỏ ra phiền về việc không đặt trước."},
+      {text:"Good evening! We have a lovely table available. Please follow me!",tip:"Trực tiếp và tích cực — khách sẽ cảm thấy được chào đón ngay."},
+      {text:"Of course! Could I have your name in case there is a brief wait?",tip:"Xin tên giúp quản lý danh sách chờ, thể hiện sự chuyên nghiệp."}
+    ],
+    followUp:"Right this way! Window seat or quieter inside — which do you prefer?"
+  },
+  order:{
+    opener:{role:"guest",text:"I want to try something very traditional Vietnamese. What do you recommend?"},
+    replies:[
+      {text:"I would recommend our braised pork belly with rice — a real Vietnamese classic!",tip:"Thể hiện sự nhiệt tình và kiến thức về ẩm thực địa phương."},
+      {text:"Our clay pot catfish is amazing — slow-cooked with ginger and caramelized fish sauce!",tip:"Mô tả sinh động giúp khách hình dung và kích thích tò mò."},
+      {text:"Do you prefer mild or spicy? That will help me suggest the perfect dish for you!",tip:"Hỏi thêm thông tin trước khi gợi ý — thể hiện sự quan tâm cá nhân hóa."}
+    ],
+    followUp:"Wonderful choice! Would you like a fresh spring roll to start while you wait?"
+  },
+  complaint:{
+    opener:{role:"guest",text:"Excuse me, this soup is cold. Can you do something about it?"},
+    replies:[
+      {text:"I am so sorry about that! Let me take it back and bring you a hot bowl right away.",tip:"Xin lỗi ngay → Hành động ngay → Không giải thích dài dòng."},
+      {text:"I apologize — that is not acceptable. I will get you a completely fresh serving immediately.",tip:"Thừa nhận hoàn toàn → Hứa hẹn cụ thể. Dùng 'will', không dùng 'I'll try'."},
+      {text:"I am sorry! Would you prefer I heat this up, or would you like a fresh bowl?",tip:"Cho khách lựa chọn — thể hiện sự tôn trọng và linh hoạt."}
+    ],
+    followUp:"Here is your fresh hot soup! I am very sorry about that. Please enjoy!"
+  },
+  allergy:{
+    opener:{role:"guest",text:"Hi, I have a serious nut allergy. Is the pad thai safe for me?"},
+    replies:[
+      {text:"We take allergies very seriously. Let me check with the chef right now — please do not eat anything yet.",tip:"Không đoán mò — luôn xác nhận với bếp. An toàn của khách là số 1."},
+      {text:"Thank you for telling me! Let me get the full ingredient list from the chef for you right away.",tip:"Xin cảm ơn khách đã thông báo — điều này giúp cả hai tránh được rủi ro."},
+      {text:"I want to make sure you are safe. I will ask the kitchen to check every ingredient before you order.",tip:"Thể hiện sự quan tâm thật sự, không qua loa."}
+    ],
+    followUp:"I checked with the chef — the pad thai does contain peanut sauce. May I suggest the grilled fish instead? It is completely nut-free!"
+  },
+  review:{
+    opener:{role:"guest",text:"Everything was absolutely delicious tonight. Thank you so much!"},
+    replies:[
+      {text:"Thank you — that means so much to me! If you have a moment, a Google review mentioning my name — Linh — would really help my career here.",tip:"Chân thành, trực tiếp, nhẹ nhàng. Tên cụ thể giúp khách nhớ và sẵn lòng làm."},
+      {text:"I am so glad you enjoyed it! Our management rewards staff in Google reviews — mentioning my name Linh would mean so much.",tip:"Giải thích cơ chế thưởng — khách Tây rất muốn giúp khi hiểu rõ lợi ích."},
+      {text:"My pleasure! If you can mention my name — Linh — on Google Maps, that really goes a long way. Safe travels!",tip:"'Goes a long way' tự nhiên, không áp lực. Kết bằng lời chúc tốt đẹp."}
+    ],
+    followUp:"That is so kind of you — thank you! I truly hope to see you again. Have a wonderful rest of your trip! 🌟"
+  }
+};
+
+/* =============================================================
+   M01 — PHRASES
+   ============================================================= */
+var filteredP = [];
+function renderPhrases(cat) {
+  filteredP = cat === "all" ? PHRASES : PHRASES.filter(function(p){return p.cat===cat;});
+  var h = "";
+  for (var i=0; i<filteredP.length; i++) {
+    var p = filteredP[i];
+    h += '<div class="pcard" data-idx="'+i+'">'
+      +'<button class="pcopy" data-idx="'+i+'" title="Sao chép">📋</button>'
+      +'<div class="ptag">'+p.tag+'</div>'
+      +'<div class="pen">'+p.en+'</div>'
+      +'<div class="pvi">🇻🇳 '+p.vi+'</div>'
+      +'</div>';
+  }
+  document.getElementById("pgrid").innerHTML = h;
+}
+document.getElementById("pgrid").addEventListener("click", function(e) {
+  var card = e.target.closest(".pcard"); if (!card) return;
+  var idx = parseInt(card.getAttribute("data-idx"), 10);
+  var txt = filteredP[idx].en;
+  if (navigator.clipboard) { navigator.clipboard.writeText(txt).then(function(){toast("✓ Đã sao chép!");}); }
+  else { var ta=document.createElement("textarea"); ta.value=txt; document.body.appendChild(ta); ta.select(); document.execCommand("copy"); document.body.removeChild(ta); toast("✓ Đã sao chép!"); }
+});
+document.getElementById("tabsRow").addEventListener("click", function(e) {
+  if (!e.target.classList.contains("tab")) return;
+  document.querySelectorAll(".tab").forEach(function(b){b.classList.remove("on");});
+  e.target.classList.add("on");
+  renderPhrases(e.target.getAttribute("data-cat"));
+});
+renderPhrases("all");
+
+/* =============================================================
+   M02 — SCENARIOS with VI toggle per scenario card
+   ============================================================= */
+var catMap = {food:["😤","🍷","🤧"], service:["📵","⏰"], guest:["🐣"]};
+
+function renderScenarios(lvl) {
+  var list = lvl==="all" ? SCENARIOS : SCENARIOS.filter(function(s){
+    return catMap[lvl] && catMap[lvl].indexOf(s.icon) !== -1;
+  });
+  var h = "";
+  for (var i=0; i<list.length; i++) {
+    var s = list[i];
+    var sid = "sc"+i;
+    h += '<div class="scard">'
+      +'<div class="scard-head"><div class="scard-icon">'+s.icon+'</div>'
+      +'<div><div class="scard-title">'+s.title+'</div><div class="scard-vi-title">'+s.vi+'</div></div>'
+      +'<span class="diff-badge">📗 Trung Cấp</span></div>'
+      +'<div class="scard-body">'
+      +'<div class="vi-toggle-bar"><button class="vi-toggle-btn" data-sid="'+sid+'" id="vtb-'+sid+'">🇻🇳 Xem tiếng Việt</button></div>';
+    for (var d=0; d<s.dialogs.length; d++) {
+      var dl = s.dialogs[d];
+      h += '<div class="dblock">'
+        +'<div class="dlabel '+dl.role+'">'+(dl.role==="guest"?"👩‍💼 Guest":"🧑‍🍳 Staff (You)")+'</div>'
+        +'<div class="dbubble '+dl.role+'">&ldquo;'+dl.en+'&rdquo;</div>'
+        +'<div class="dvi" id="dvi-'+sid+'-'+d+'">🇻🇳 '+dl.vi+'</div>'
+        +(dl.note?'<div class="dnote">'+dl.note+'</div>':'')
+        +'</div>';
+    }
+    if (s.keys && s.keys.length) {
+      h += '<div class="key-phrases"><div class="key-label">🔑 Cụm từ cần nhớ</div><div class="key-list">';
+      for (var k=0; k<s.keys.length; k++) h += '<span class="key-word">'+s.keys[k]+'</span>';
+      h += '</div></div>';
+    }
+    h += '</div></div>';
+  }
+  document.getElementById("sgrid").innerHTML = h || '<p style="color:var(--muted);padding:16px;">Không có tình huống trong nhóm này.</p>';
+
+  /* attach toggle handlers */
+  document.querySelectorAll(".vi-toggle-btn").forEach(function(btn) {
+    btn.addEventListener("click", function() {
+      var sid = btn.getAttribute("data-sid");
+      var isOn = btn.classList.toggle("on");
+      btn.textContent = isOn ? "🇻🇳 Ẩn tiếng Việt" : "🇻🇳 Xem tiếng Việt";
+      document.querySelectorAll('[id^="dvi-'+sid+'"]').forEach(function(el){
+        el.classList.toggle("show", isOn);
+      });
+    });
+  });
+}
+
+document.getElementById("sTabsRow").addEventListener("click", function(e) {
+  if (!e.target.classList.contains("s-tab")) return;
+  document.querySelectorAll(".s-tab").forEach(function(b){b.classList.remove("on");});
+  e.target.classList.add("on");
+  renderScenarios(e.target.getAttribute("data-lvl"));
+});
+renderScenarios("all");
+
+/* =============================================================
+   M03 — SMALL TALK (tap card to show/hide VI)
+   ============================================================= */
+var stH = "";
+for (var si=0; si<SMALLTALK.length; si++) {
+  var st = SMALLTALK[si];
+  stH += '<div class="stcard" data-stidx="'+si+'">'
+    +'<div class="sttopic">'+st.topic+'</div>'
+    +'<div class="stphrase">'+st.phrase+'</div>'
+    +'<div class="stvi" id="stvi-'+si+'">🇻🇳 '+st.vi+'</div>'
+    +'<div class="sttip">'+st.tip+'</div>'
+    +'<div class="st-vi-hint" id="stht-'+si+'">👆 Nhấn để xem tiếng Việt</div>'
+    +'</div>';
+}
+document.getElementById("stgrid").innerHTML = stH;
+
+document.getElementById("stgrid").addEventListener("click", function(e) {
+  var card = e.target.closest(".stcard"); if (!card) return;
+  var idx = card.getAttribute("data-stidx");
+  var vi = document.getElementById("stvi-"+idx);
+  var hint = document.getElementById("stht-"+idx);
+  var showing = vi.classList.toggle("show");
+  hint.textContent = showing ? "👆 Nhấn để ẩn" : "👆 Nhấn để xem tiếng Việt";
+});
+
+/* =============================================================
+   M04 — REVIEWS (toggle VI per card)
+   ============================================================= */
+var rvH = "";
+for (var ri=0; ri<REVIEWS.length; ri++) {
+  var r = REVIEWS[ri];
+  rvH += '<div class="rcard">'
+    +'<div class="rlevel"><span class="rbadge '+r.level+'">'+r.badge+'</span><span class="rstars">⭐⭐⭐⭐⭐</span></div>'
+    +'<div class="rtext">'+r.en+'</div>'
+    +'<button class="rvi-btn" data-rid="'+ri+'">🇻🇳 Xem tiếng Việt</button>'
+    +'<div class="rvi-text" id="rvi-'+ri+'">'+r.vi+'</div>'
+    +'<div class="ranalysis">'+r.analysis+'</div>'
+    +'</div>';
+}
+document.getElementById("rcards").innerHTML = rvH;
+
+document.getElementById("rcards").addEventListener("click", function(e) {
+  var btn = e.target.closest(".rvi-btn"); if (!btn) return;
+  var rid = btn.getAttribute("data-rid");
+  var el = document.getElementById("rvi-"+rid);
+  var on = el.classList.toggle("show");
+  btn.classList.toggle("on", on);
+  btn.textContent = on ? "🇻🇳 Ẩn tiếng Việt" : "🇻🇳 Xem tiếng Việt";
+});
+
+/* =============================================================
+   M05 — CHATBOT
+   ============================================================= */
+var curScene = "arrival", waitFU = false;
+function chatAdd(role, text, tip) {
+  var c = document.getElementById("chatMsgs");
+  var d = document.createElement("div"); d.className = "msg "+role;
+  d.innerHTML = '<div class="msg-name">'+(role==="guest"?"👩‍💼 Sarah (Guest)":"🧑‍🍳 You (Staff)")+'</div>'
+    +'<div class="msg-bubble">'+text+'</div>'
+    +(tip ? '<div class="msg-tip">💡 '+tip+'</div>' : "");
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+}
+function showTyping(then) {
+  var c = document.getElementById("chatMsgs");
+  var d = document.createElement("div"); d.className = "msg guest"; d.id = "typDiv";
+  d.innerHTML = '<div class="msg-name">👩‍💼 Sarah (Guest)</div><div class="msg-bubble"><div class="typing-dot"><span></span><span></span><span></span></div></div>';
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
+  setTimeout(function(){
+    var td = document.getElementById("typDiv"); if (td) td.remove();
+    chatAdd("guest", then, null); renderQR([]); waitFU = true;
+  }, 1700);
+}
+function renderQR(replies) {
+  var qr = document.getElementById("chatQR");
+  if (!replies || !replies.length) {
+    qr.innerHTML = '<span style="font-size:.76rem;color:var(--muted);">✏️ Gõ câu trả lời hoặc chọn kịch bản mới.</span>';
+    return;
+  }
+  qr.innerHTML = '<span style="font-size:.72rem;color:var(--muted);font-weight:600;flex-basis:100%;width:100%;">💬 Chọn câu phù hợp:</span>';
+  for (var i=0; i<replies.length; i++) {
+    (function(idx){
+      var btn = document.createElement("button"); btn.className = "qr-btn";
+      var t = replies[idx].text;
+      btn.textContent = t.length > 60 ? t.substring(0,60)+"..." : t;
+      btn.addEventListener("click", function(){ pickR(idx); });
+      qr.appendChild(btn);
+    })(i);
+  }
+}
+function pickR(idx) {
+  var sc = CHAT[curScene];
+  chatAdd("staff", sc.replies[idx].text, sc.replies[idx].tip);
+  setTimeout(function(){ showTyping(sc.followUp); }, 420);
+}
+function loadScene(s) {
+  curScene = s; waitFU = false;
+  document.getElementById("chatMsgs").innerHTML = "";
+  chatAdd(CHAT[s].opener.role, CHAT[s].opener.text, null);
+  renderQR(CHAT[s].replies);
+}
+document.querySelectorAll(".spill").forEach(function(btn){
+  btn.addEventListener("click", function(){
+    document.querySelectorAll(".spill").forEach(function(b){b.classList.remove("on");});
+    btn.classList.add("on"); loadScene(btn.getAttribute("data-scene"));
+  });
+});
+function doSend() {
+  var inp = document.getElementById("chatInput"), txt = inp.value.trim(); if (!txt) return;
+  chatAdd("staff", txt, null); inp.value = "";
+  if (!waitFU) { setTimeout(function(){ showTyping(CHAT[curScene].followUp); }, 500); }
+  else { setTimeout(function(){ chatAdd("guest","Thank you! That was so helpful. 😊",null); renderQR([]); }, 1400); }
+}
+document.getElementById("chatSend").addEventListener("click", doSend);
+document.getElementById("chatInput").addEventListener("keydown", function(e){ if (e.key==="Enter") doSend(); });
+loadScene("arrival");
+
+/* =============================================================
+   SCROLL + NAV HIGHLIGHT
+   ============================================================= */
+function toast(msg) {
+  var t = document.getElementById("toast"); t.textContent = msg; t.classList.add("show");
+  setTimeout(function(){ t.classList.remove("show"); }, 2100);
+}
+var sections = ["theory","scenarios","smalltalk","review","chatbot"];
+function updateBNav() {
+  var scrollY = window.scrollY + window.innerHeight/3;
+  var active = "theory";
+  for (var i=0; i<sections.length; i++) {
+    var el = document.getElementById(sections[i]);
+    if (el && el.offsetTop <= scrollY) active = sections[i];
+  }
+  document.querySelectorAll(".bnav-item").forEach(function(a){
+    a.classList.toggle("act", a.getAttribute("href")==="#"+active);
+  });
+}
+window.addEventListener("scroll", function(){
+  var pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById("bar").style.width = pct + "%";
+  if (window.scrollY > window.innerHeight * 0.5) document.getElementById("snav").classList.add("show");
+  else document.getElementById("snav").classList.remove("show");
+  updateBNav();
+}, {passive:true});
+updateBNav();
+</script>
+</body>
+</html>
